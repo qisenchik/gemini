@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание — Китайский язык с ИИ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Spectral:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #fdf6e9;
+    --red: #c0392b;
+    --gold: #b8860b;
+    --muted: #7a6a55;
+    --light: #f0e6d0;
+    --border: #d4b896;
+    --green: #2d6a4f;
+    --blue: #1a4a7a;
+    --shadow: 0 4px 12px rgba(212, 184, 150, 0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', serif;
+    font-size: 16px;
+    line-height: 1.7;
+    padding: 30px 15px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .hw-header {
+    text-align: center;
+    padding: 36px 15px 28px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hw-header::before {
+    content: "智能";
+    position: absolute;
+    top: 10px; right: 20px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 56px;
+    color: var(--border);
+    opacity: .2;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hw-header .label {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .hw-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .hw-header .subtitle {
+    margin-top: 8px;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* AI CHAT TUTOR ACCORDION */
+  .ai-assistant-card {
+    background: #fff8ee;
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 35px;
+    box-shadow: var(--shadow);
+  }
+  .ai-assistant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ai-assistant-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ai-assistant-body {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px dashed var(--border);
+    padding-top: 15px;
+  }
+  .ai-assistant-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Spectral', serif;
+    font-size: 14px;
+    background: var(--paper);
+    outline: none;
+    resize: vertical;
+  }
+  .ai-assistant-btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ai-quick-query-btn {
+    background: var(--light);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.2s;
+  }
+  .ai-quick-query-btn:hover {
+    background: var(--gold);
+    color: white;
+    border-color: var(--gold);
+  }
+  .ai-ask-submit-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .ai-ask-submit-btn:hover {
+    background: #962d22;
+  }
+  .ai-assistant-response {
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid var(--gold);
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+
+  /* SECTION */
+  .section { margin-bottom: 52px; }
+  .section-title {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    width: 36px; height: 36px;
+    background: var(--red); color: #fff;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px; font-weight: 700;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(192, 57, 43, 0.3);
+  }
+  .section-title h2 { font-size: 20px; font-weight: 600; color: var(--ink); }
+  .section-title .hint { font-size: 13px; font-style: italic; color: var(--muted); }
+
+  /* LEGEND */
+  .grammar-legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 22px;
+    padding: 13px 16px;
+    background: var(--light);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px; color: var(--muted);
+  }
+  .grammar-legend .tag { display: flex; align-items: center; gap: 6px; }
+  .tbadge {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px; color: #fff;
+  }
+  .tb-bi { background: var(--blue); }
+  .tb-geng { background: var(--green); }
+  .tb-meiyu { background: var(--red); }
+  .tb-zui { background: var(--gold); }
+  .tb-hen { background: var(--blue); }
+  .tb-shi { background: var(--green); }
+
+  /* EXAMPLE BLOCK (образец) */
+  .example-block {
+    background: #fff8ee;
+    border: 1.5px dashed var(--gold);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 0 10px rgba(184, 134, 11, 0.05);
+  }
+  .example-label {
+    font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--gold); font-family: 'Noto Sans SC', sans-serif;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .example-rows { display: flex; flex-direction: column; gap: 12px; }
+  .ex-row {
+    display: grid;
+    grid-template-columns: 34px 100px 1fr;
+    gap: 6px 12px;
+    align-items: start;
+  }
+  @media (max-width: 600px) {
+    .ex-row {
+      grid-template-columns: 34px 1fr;
+    }
+    .row-label {
+      grid-column: 2 / -1;
+      border-bottom: 1px solid rgba(212, 184, 150, 0.3);
+      padding-bottom: 4px;
+    }
+    .row-content {
+      grid-column: 1 / -1;
+      padding-left: 10px;
+    }
+  }
+  .row-badge {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 12px; font-weight: 700;
+    padding: 2px 5px; border-radius: 4px; color: #fff;
+    text-align: center; line-height: 1.5; margin-top: 2px;
+  }
+  .row-label { font-size: 12px; color: var(--muted); font-style: italic; padding-top: 2px; }
+  .row-content { display: flex; flex-direction: column; gap: 1px; }
+  .cn-line {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px; color: var(--ink); letter-spacing: .04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .py-line { font-size: 11px; color: var(--muted); font-style: italic; }
+  .ru-line { font-size: 13px; color: var(--muted); }
+  .hl-blue { color: var(--blue); font-weight: 700; }
+  .hl-green { color: var(--green); font-weight: 700; }
+  .hl-red { color: var(--red); font-weight: 700; }
+  .hl-gold { color: var(--gold); font-weight: 700; }
+
+  /* SPEAK BUTTON */
+  .speak-inline-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    color: var(--gold);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .speak-inline-btn:hover {
+    background: var(--light);
+  }
+  .speak-inline-btn:active {
+    transform: scale(0.9);
+  }
+
+  /* TASK CARDS */
+  .tasks-grid { display: flex; flex-direction: column; gap: 20px; }
+
+  .task-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .task-head {
+    background: var(--light);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .task-num { color: var(--muted); font-family: 'Noto Serif SC', serif; font-size: 14px; min-width: 18px; font-weight: bold; }
+  .chip {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px; padding: 2px 9px;
+    border-radius: 20px;
+    background: #fff; border: 1px solid var(--border); color: var(--ink);
+  }
+  .chip.cn { border-color: var(--blue); color: var(--blue); font-weight: 500; }
+
+  .task-inputs { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 34px 1fr 45px;
+    gap: 6px 8px;
+    align-items: center;
+  }
+  .input-badge {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 12px; font-weight: 700;
+    padding: 3px 5px; border-radius: 4px; color: #fff;
+    text-align: center; line-height: 1.4;
+  }
+  .task-input {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+  }
+  .task-input:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15); }
+  .task-input.correct { border-color: var(--green) !important; background: #edf7f1 !important; }
+  .task-input.wrong { border-color: var(--red) !important; background: #fdf0ee !important; }
+  .task-input.checking { border-color: var(--gold) !important; background: #fffbf4 !important; }
+
+  .check-btn {
+    width: 42px; height: 34px;
+    border: none; border-radius: 6px;
+    background: var(--light); color: var(--muted);
+    font-size: 14px; cursor: pointer;
+    transition: background .15s, color .15s, transform .1s;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .check-btn:hover { background: var(--gold); color: #fff; }
+  .check-btn:active { transform: scale(0.95); }
+  .check-btn.spin span { display: inline-block; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .feedback {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: -6px;
+    grid-column: 2 / 4;
+    line-height: 1.5;
+    display: none;
+    animation: fadeIn 0.2s ease-out;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #edf7f1; color: var(--green); border-left: 3px solid var(--green); }
+  .feedback.bad { background: #fdf0ee; color: var(--red); border-left: 3px solid var(--red); }
+
+  /* DYNAMIC AI GENERATOR BUTTON */
+  .ai-generate-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 320px;
+    margin: 24px auto 0;
+    padding: 12px 20px;
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(184, 134, 11, 0.2);
+    transition: all 0.2s;
+  }
+  .ai-generate-more-btn:hover {
+    background: #9d730a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(184, 134, 11, 0.3);
+  }
+  .ai-generate-more-btn:active {
+    transform: translateY(0);
+  }
+  .ai-generate-more-btn.loading {
+    background: var(--muted);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .ai-generate-more-btn.loading span {
+    animation: spin .7s linear infinite;
+  }
+
+  /* SECTION 2 — 很 vs 是 (Перевод с русского на китайский) */
+  .transform-block {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .transform-head {
+    background: var(--light);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px;
+  }
+  .transform-head .t-num { color: var(--muted); font-family: 'Noto Serif SC', serif; font-size: 14px; font-weight: bold; }
+  .transform-head .t-ru { font-weight: 600; font-style: italic; color: var(--ink); }
+  .transform-rows { padding: 16px 16px; display: flex; flex-direction: column; gap: 16px; }
+  .t-row { display: grid; grid-template-columns: 32px 1fr; gap: 8px 12px; align-items: start; }
+  .t-type {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 13px; font-weight: 700;
+    width: 30px; height: 30px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; flex-shrink: 0; margin-top: 2px;
+  }
+  .t-type.hen { background: var(--blue); }
+  .t-type.shi { background: var(--green); }
+  .t-content { display: flex; flex-direction: column; gap: 4px; }
+  .t-ru-prompt { font-size: 14px; color: var(--ink); font-weight: 600; line-height: 1.4; }
+  .t-ru-prompt span { font-weight: normal; color: var(--muted); font-size: 13px; }
+  
+  .t-input-row {
+    display: grid;
+    grid-template-columns: 1fr 45px;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  /* CHAT SIMULATOR (MARKET ROLEPLAY) */
+  .market-chat-container {
+    background: #fff;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 35px;
+    box-shadow: var(--shadow);
+  }
+  .market-chat-head {
+    background: var(--gold);
+    color: white;
+    padding: 12px 16px;
+    font-family: 'Noto Serif SC', serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+  }
+  .market-chat-badge {
+    background: rgba(255,255,255,0.25);
+    padding: 3px 8px;
+    font-size: 11px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .market-chat-messages {
+    height: 320px;
+    overflow-y: auto;
+    padding: 16px;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .chat-bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .chat-bubble.vendor {
+    background: #fffbf0;
+    align-self: flex-start;
+    border-left: 4px solid var(--red);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .chat-bubble.user {
+    background: var(--blue);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .chat-input-area {
+    display: flex;
+    padding: 10px;
+    background: var(--light);
+    gap: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    outline: none;
+    font-family: 'Noto Serif SC', serif;
+  }
+  .chat-input:focus {
+    border-color: var(--gold);
+  }
+  .chat-send-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .chat-send-btn:hover {
+    background: #962d22;
+  }
+
+  /* VOCAB */
+  .vocab-intro {
+    background: var(--light);
+    border-left: 4px solid var(--gold);
+    padding: 13px 16px;
+    margin-bottom: 20px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px; font-style: italic; color: var(--muted);
+  }
+  .vocab-intro strong { color: var(--ink); font-style: normal; }
+  .vocab-group-title {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px; padding-left: 4px;
+  }
+  table.vocab-table {
+    width: 100%; border-collapse: collapse;
+    margin-bottom: 22px; font-size: 14px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(212, 184, 150, 0.15);
+  }
+  .vocab-table th {
+    background: var(--ink); color: var(--paper);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .1em; padding: 10px 14px; text-align: left;
+  }
+  .vocab-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--light); vertical-align: middle;
+  }
+  .vocab-table tr:last-child td { border-bottom: none; }
+  .vocab-table tr:nth-child(even) td { background: rgba(240,230,208,.25); }
+  .vocab-table .hanzi { font-family: 'Noto Serif SC', serif; font-size: 18px; color: var(--red); font-weight: 600; }
+  .vocab-table .pinyin { font-style: italic; color: var(--blue); font-size: 13px; }
+  
+  .vocab-action-cell {
+    text-align: right;
+  }
+
+  footer {
+    text-align: center; padding-top: 28px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted); font-style: italic;
+    margin-top: 40px;
+  }
+  footer span { color: var(--red); font-weight: bold; }
+</style>
+</head>
+<body>
+
+<header class="hw-header">
+  <div class="label">Домашнее задание · 汉语练习</div>
+  <h1>Сравнительные конструкции и словарь рынка</h1>
+  <div class="subtitle">比 · 更 · 没有 · 最 &nbsp;|&nbsp; 很 vs 是 &nbsp;|&nbsp; Интеллектуальная ИИ-поддержка</div>
+</header>
+
+<!-- ===== EXPERT AI ASSISTANT PANEL ===== -->
+<div class="ai-assistant-card">
+  <div class="ai-assistant-header" onclick="toggleAIAssistant()">
+    <div class="ai-assistant-title">
+      <span>✨ Интерактивный ИИ-Репетитор (Личный Помощник)</span>
+    </div>
+    <span id="ai-toggle-icon" style="color: var(--gold); font-size: 18px;">▼</span>
+  </div>
+  <div class="ai-assistant-body" id="ai-assistant-body" style="display: none;">
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 8px;">
+      Задай вопрос репетитору по теме урока! Например, спроси про разницу между 很 и 是, или попроси составить забавный пример.
+    </p>
+    <div class="ai-assistant-btn-group">
+      <button class="ai-quick-query-btn" onclick="askQuickQuestion('Объясни простыми словами разницу между 很 и 是 с забавным примером.')">💡 Разница 很 / 是</button>
+      <button class="ai-quick-query-btn" onclick="askQuickQuestion('Как правильно использовать 更 (gèng) в сравнениях?')">💡 Как использовать 更</button>
+      <button class="ai-quick-query-btn" onclick="askQuickQuestion('Придумай диалог на рынке с использованием 比.')">🍎 Диалог на рынке с 比</button>
+    </div>
+    <textarea id="ai-custom-question" class="ai-assistant-textarea" placeholder="Напиши свой вопрос на русском или китайском..."></textarea>
+    <button class="ai-ask-submit-btn" onclick="askCustomQuestion()" id="ai-ask-btn">✨ Спросить ИИ</button>
+    
+    <div class="ai-assistant-response" id="ai-assistant-response"></div>
+  </div>
+</div>
+
+<!-- ===== SECTION 1 ===== -->
+<section class="section">
+  <div class="section-title">
+    <div class="section-num">一</div>
+    <div>
+      <h2>Сравнительные конструкции</h2>
+      <div class="hint">Напиши по одному предложению с каждой структурой. Нажми кнопку ✨ для проверки с ИИ.</div>
+    </div>
+  </div>
+
+  <div class="grammar-legend">
+    <div class="tag"><span class="tbadge tb-bi">比</span> A比B + прил. — A [прил.]-ее, чем B</div>
+    <div class="tag"><span class="tbadge tb-geng">更</span> A更 + прил. — A ещё более [прил.]</div>
+    <div class="tag"><span class="tbadge tb-meiyu">没有</span> A没有B + прил. — A не такое, как B</div>
+    <div class="tag"><span class="tbadge tb-zui">最</span> A最 + прил. — A самое [прил.]</div>
+  </div>
+
+  <!-- ОБРАЗЕЦ -->
+  <div class="example-block">
+    <div class="example-label">📖 Образец — читай, слушай и запоминай структуру</div>
+    <div class="example-rows">
+      <div class="ex-row">
+        <span class="row-badge tb-bi">比</span>
+        <span class="row-label">A дешевле B</span>
+        <div class="row-content">
+          <span class="cn-line">
+            苹果比梨便宜。
+            <button class="speak-inline-btn" onclick="speakText('苹果比梨便宜。')" title="Озвучить ИИ">🔊</button>
+          </span>
+          <span class="py-line">Píngguǒ bǐ lí piányí.</span>
+          <span class="ru-line">Яблоко дешевле, чем груша.</span>
+        </div>
+      </div>
+      <div class="ex-row">
+        <span class="row-badge tb-geng">更</span>
+        <span class="row-label">A ещё дешевле</span>
+        <div class="row-content">
+          <span class="cn-line">
+            苹果更便宜。
+            <button class="speak-inline-btn" onclick="speakText('苹果更便宜。')" title="Озвучить ИИ">🔊</button>
+          </span>
+          <span class="py-line">Píngguǒ gèng piányí.</span>
+          <span class="ru-line">Яблоко ещё дешевле (более дешёвое).</span>
+        </div>
+      </div>
+      <div class="ex-row">
+        <span class="row-badge tb-meiyu">没有</span>
+        <span class="row-label">A не такое дешёвое, как B</span>
+        <div class="row-content">
+          <span class="cn-line">
+            苹果没有梨便宜。
+            <button class="speak-inline-btn" onclick="speakText('苹果没有梨便宜。')" title="Озвучить ИИ">🔊</button>
+          </span>
+          <span class="py-line">Píngguǒ méiyǒu lí piányí.</span>
+          <span class="ru-line">Яблоко не такое дешёвое, как груша.</span>
+        </div>
+      </div>
+      <div class="ex-row">
+        <span class="row-badge tb-zui">最</span>
+        <span class="row-label">самое дешёвое</span>
+        <div class="row-content">
+          <span class="cn-line">
+            梨最便宜。
+            <button class="speak-inline-btn" onclick="speakText('梨最便宜。')" title="Озвучить ИИ">🔊</button>
+          </span>
+          <span class="py-line">Lí zuì piányí.</span>
+          <span class="ru-line">Груша самая дешёвая.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="tasks-grid" id="comp-tasks"></div>
+
+  <!-- DYNAMIC GENERATOR -->
+  <button class="ai-generate-more-btn" id="generate-comp-btn" onclick="generateMoreCompTasks()">
+    <span>✨</span> Сгенерировать новое задание от ИИ
+  </button>
+</section>
+
+<!-- ===== SECTION 2 ===== -->
+<section class="section">
+  <div class="section-title">
+    <div class="section-num">二</div>
+    <div>
+      <h2>很 или 是? Переведи на китайский</h2>
+      <div class="hint">Переведи русские предложения на китайский язык, соблюдая грамматическую форму. Нажми ✨ для интеллектуального разбора.</div>
+    </div>
+  </div>
+
+  <div class="grammar-legend">
+    <div class="tag"><span class="tbadge tb-hen">很</span> Прилаг. = сказуемое (Этот библиотека тихая) &rarr; 这个图书馆很安静。</div>
+    <div class="tag"><span class="tbadge tb-shi">是</span> Прилаг. = определение (Это тихая библиотека) &rarr; 这是一个安静的图书馆。</div>
+  </div>
+
+  <!-- ОБРАЗЕЦ -->
+  <div class="example-block">
+    <div class="example-label">📖 Образец — обрати внимание на разницу структур</div>
+    <div class="example-rows">
+      <div class="ex-row">
+        <span class="row-badge tb-hen">很</span>
+        <span class="row-label">прил. = сказуемое</span>
+        <div class="row-content">
+          <span class="ru-line" style="font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px;">Эта библиотека тихая.</span>
+          <span class="cn-line hl-blue">
+            这个图书馆很安静。
+            <button class="speak-inline-btn" onclick="speakText('这个图书馆很安静。')" title="Озвучить ИИ">🔊</button>
+          </span>
+          <span class="py-line">Zhège túshūguǎn hěn ānjìng.</span>
+        </div>
+      </div>
+      <div class="ex-row">
+        <span class="row-badge tb-shi">是</span>
+        <span class="row-label">прил. = определение</span>
+        <div class="row-content">
+          <span class="ru-line" style="font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px;">Это тихая библиотека.</span>
+          <span class="cn-line hl-green">
+            这是一个安静的图书馆。
+            <button class="speak-inline-btn" onclick="speakText('这是一个安静的图书馆。')" title="Озвучить ИИ">🔊</button>
+          </span>
+          <span class="py-line">Zhè  shì  yī gè  ānjìng  de  túshūguǎn.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="transform-tasks"></div>
+
+  <!-- DYNAMIC GENERATOR 2 -->
+  <button class="ai-generate-more-btn" id="generate-trans-btn" onclick="generateMoreTransformTasks()">
+    <span>✨</span> Сгенерировать новое задание от ИИ
+  </button>
+</section>
+
+<!-- ===== VOCABULARY ===== -->
+<section class="section">
+  <div class="section-title">
+    <div class="section-num">词</div>
+    <div><h2>Словарик: подготовка к походу на рынок</h2></div>
+  </div>
+  <div class="vocab-intro">
+    <strong>去市场前必备词汇</strong> — Нажми на кнопку 🔊 рядом с иероглифом, чтобы послушать его правильное произношение через Gemini TTS! 🧺
+  </div>
+
+  <div class="vocab-group-title">🍎 Фрукты и овощи</div>
+  <table class="vocab-table">
+    <thead><tr><th>汉字</th><th>Pinyin</th><th>Перевод</th><th class="vocab-action-cell">Голос</th></tr></thead>
+    <tbody>
+      <tr><td class="hanzi">苹果</td><td class="pinyin">píngguǒ</td><td>яблоко</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('苹果')">🔊</button></td></tr>
+      <tr><td class="hanzi">香蕉</td><td class="pinyin">xiāngjiāo</td><td>банан</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('香蕉')">🔊</button></td></tr>
+      <tr><td class="hanzi">橙子</td><td class="pinyin">chéngzi</td><td>апельсин</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('橙子')">🔊</button></td></tr>
+      <tr><td class="hanzi">西瓜</td><td class="pinyin">xīguā</td><td>арбуз</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('西瓜')">🔊</button></td></tr>
+      <tr><td class="hanzi">葡萄</td><td class="pinyin">pútao</td><td>виноград</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('葡萄')">🔊</button></td></tr>
+      <tr><td class="hanzi">草莓</td><td class="pinyin">cǎoméi</td><td>клубника</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('草莓')">🔊</button></td></tr>
+      <tr><td class="hanzi">西红柿</td><td class="pinyin">xīhóngshì</td><td>помидор</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('西红柿')">🔊</button></td></tr>
+      <tr><td class="hanzi">黄瓜</td><td class="pinyin">huángguā</td><td>огурец</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('黄瓜')">🔊</button></td></tr>
+      <tr><td class="hanzi">土豆</td><td class="pinyin">tǔdòu</td><td>картофель</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('土豆')">🔊</button></td></tr>
+      <tr><td class="hanzi">白菜</td><td class="pinyin">báicài</td><td>китайская капуста</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('白菜')">🔊</button></td></tr>
+      <tr><td class="hanzi">胡萝卜</td><td class="pinyin">húluóbo</td><td>морковь</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('胡萝卜')">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <div class="vocab-group-title">💰 На кассе</div>
+  <table class="vocab-table">
+    <thead><tr><th>汉字</th><th>Pinyin</th><th>Перевод</th><th class="vocab-action-cell">Голос</th></tr></thead>
+    <tbody>
+      <tr><td class="hanzi">钱</td><td class="pinyin">qián</td><td>деньги</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('钱')">🔊</button></td></tr>
+      <tr><td class="hanzi">块</td><td class="pinyin">kuài</td><td>юань (разг.)</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('块')">🔊</button></td></tr>
+      <tr><td class="hanzi">买</td><td class="pinyin">mǎi</td><td>покупать</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('买')">🔊</button></td></tr>
+      <tr><td class="hanzi">卖</td><td class="pinyin">mài</td><td>продавать</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('卖')">🔊</button></td></tr>
+      <tr><td class="hanzi">多少钱</td><td class="pinyin">duōshao qián</td><td>сколько стоит?</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('多少钱')">🔊</button></td></tr>
+      <tr><td class="hanzi">太贵了</td><td class="pinyin">tài guì le</td><td>слишком дорого!</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('太贵了')">🔊</button></td></tr>
+      <tr><td class="hanzi">便宜</td><td class="pinyin">piányí</td><td>дешёвый</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('便宜')">🔊</button></td></tr>
+      <tr><td class="hanzi">贵</td><td class="pinyin">guì</td><td>дорогой</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('贵')">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <div class="vocab-group-title">⚖️ Меры веса</div>
+  <table class="vocab-table">
+    <thead><tr><th>汉字</th><th>Pinyin</th><th>Перевод</th><th class="vocab-action-cell">Голос</th></tr></thead>
+    <tbody>
+      <tr><td class="hanzi">斤</td><td class="pinyin">jīn</td><td>цзинь (≈ 500 г)</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('斤')">🔊</button></td></tr>
+      <tr><td class="hanzi">一斤</td><td class="pinyin">yì jīn</td><td>полкилограмма</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('一斤')">🔊</button></td></tr>
+      <tr><td class="hanzi">两斤</td><td class="pinyin">liǎng jīn</td><td>один килограмм</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('两斤')">🔊</button></td></tr>
+      <tr><td class="hanzi">半斤</td><td class="pinyin">bàn jīn</td><td>четверть килограмма (250 г)</td><td class="vocab-action-cell"><button class="speak-inline-btn" onclick="speakText('半斤')">🔊</button></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== INTERACTIVE MARKET CHAT SIMULATOR (GEMINI POWERED) ===== -->
+<section class="section">
+  <div class="section-title">
+    <div class="section-num">✨</div>
+    <div>
+      <h2>Интерактивный ИИ-разговорный тренажер «Китайский Рынок»</h2>
+      <div class="hint">Потренируйся торговаться и покупать овощи! Продавец ответит на китайском, даст пиньинь и перевод.</div>
+    </div>
+  </div>
+  
+  <div class="market-chat-container">
+    <div class="market-chat-head">
+      <span>🧺 Разговор с торговцем овощами (老板 Lǎobǎn)</span>
+      <span class="market-chat-badge">Gemini AI</span>
+    </div>
+    <div class="market-chat-messages" id="market-chat-messages">
+      <div class="chat-bubble vendor">
+        <strong>老板:</strong> 你好！想买什么？新鲜的水果 and 蔬菜，来看一看！
+        <br><small style="color:var(--muted); font-style:italic;">Nǐ hǎo! Xiǎng mǎi shénme? Xīnxiān de shuǐguǒ hé shūcài, lái kàn yi kàn! (Привет! Что хочешь купить? Свежие фрукты и овощи, подходи посмотри!)</small>
+        <button class="speak-inline-btn" onclick="speakText('你好！想买什么？新鲜的水果和蔬菜，来看一看！')">🔊</button>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="market-chat-input" class="chat-input" placeholder="Напиши на китайском (например: 苹果多少钱一斤?)..." autocomplete="off">
+      <button class="chat-send-btn" onclick="sendMarketMessage()" id="market-chat-send-btn">✨ Отправить</button>
+    </div>
+  </div>
+</section>
+
+<footer><span>加油！</span> Ты справишься — удачи на рынке 🎋</footer>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+let compTasks = [
+  {
+    words: ["кошка", "собака", "большой"],
+    wordsCN: "猫 / 狗 / 大",
+    rows: [
+      { badge: "比", color: "#1a4a7a", label: "A больше B", hint: "狗比猫大。" },
+      { badge: "更", color: "#2d6a4f", label: "A ещё больше", hint: "狗更大。" },
+      { badge: "没有", color: "#c0392b", label: "A не такое большое, как B", hint: "猫没有狗大。" },
+      { badge: "最", color: "#b8860b", label: "самое большое", hint: "狗最大。" },
+    ]
+  },
+  {
+    words: ["арбуз", "апельсин", "сладкий"],
+    wordsCN: "西瓜 / 橙子 / 甜",
+    rows: [
+      { badge: "比", color: "#1a4a7a", label: "A слаще B", hint: "西瓜比橙子甜。" },
+      { badge: "更", color: "#2d6a4f", label: "A ещё слаще", hint: "西瓜更甜。" },
+      { badge: "没有", color: "#c0392b", label: "A не такое сладкое, как B", hint: "橙子没有西瓜甜。" },
+      { badge: "最", color: "#b8860b", label: "самое сладкое", hint: "西瓜最甜。" },
+    ]
+  },
+  {
+    words: ["чай", "кофе", "вкусный"],
+    wordsCN: "茶 / 咖啡 / 好喝",
+    rows: [
+      { badge: "比", color: "#1a4a7a", label: "A вкуснее B", hint: "茶比咖啡好喝。" },
+      { badge: "更", color: "#2d6a4f", label: "A ещё вкуснее", hint: "茶更好喝。" },
+      { badge: "没有", color: "#c0392b", label: "A не такое вкусное, как B", hint: "咖啡没有茶好喝。" },
+      { badge: "最", color: "#b8860b", label: "самое вкусное", hint: "茶最好喝。" },
+    ]
+  }
+];
+
+let transformTasks = [
+  {
+    title: "Ресторан и дороговизна",
+    hen: {
+      ru: "Этот ресторан дорогой.",
+      expected: "这个餐厅很贵 / 这个饭馆很贵",
+      pinyin: "Zhège cāntīng hěn guì. / Zhège fànguǎn hěn guì."
+    },
+    shi: {
+      ru: "Это дорогой ресторан.",
+      expected: "这是一个很贵的餐厅 / 这是一个很贵的饭馆",
+      pinyin: "Zhè  shì  yī gè  hěn guì de cāntīng."
+    }
+  },
+  {
+    title: "Фрукт и сладость",
+    hen: {
+      ru: "Этот фрукт сладкий.",
+      expected: "这个水果很甜",
+      pinyin: "Zhège shuǐguǒ hěn tián."
+    },
+    shi: {
+      ru: "Это сладкий фрукт.",
+      expected: "这是一个很甜的水果",
+      pinyin: "Zhè shì yī gè hěn tián de shuǐguǒ."
+    }
+  }
+];
+
+// ── SECURITY & API PROXY CONFIGURATION ────────────────────────────────────────
+
+// Автоматически определяет хост: для локальной разработки и для Vercel 
+// использует относительный путь. При размещении фронтенда на GitHub Pages, 
+// замените эту константу на адрес вашего деплоя на Vercel (например, "https://my-app.vercel.app/api/gemini")
+const API_URL = "/api/gemini"; 
+
+async function callGeminiAPI(payload, endpointType = "text") {
+  let delay = 1000;
+  for (let i = 0; i < 5; i++) {
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payload, endpointType })
+      });
+      if (response.ok) {
+        return await response.json();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Ошибка сервера");
+      }
+    } catch (e) {
+      console.warn(`Попытка ${i + 1} не удалась: ${e.message}`);
+    }
+    await new Promise(resolve => setTimeout(resolve, delay));
+    delay *= 2;
+  }
+  throw new Error("Не удалось связаться с сервером ИИ. Проверьте соединение и настройки Vercel.");
+}
+
+// ── TEXT-TO-SPEECH (TTS) FUNCTION ─────────────────────────────────────────────
+
+function pcmToWav(pcmBase64, sampleRate = 24000) {
+  const binary = atob(pcmBase64);
+  const len = binary.length;
+  const buffer = new ArrayBuffer(44 + len);
+  const view = new DataView(buffer);
+  
+  view.setUint32(0, 0x52494646, false); // "RIFF"
+  view.setUint32(4, 36 + len, true);   
+  view.setUint32(8, 0x57415645, false); // "WAVE"
+  
+  view.setUint32(12, 0x666d7420, false); // "fmt "
+  view.setUint32(16, 16, true);          
+  view.setUint16(20, 1, true);           // PCM format
+  view.setUint16(22, 1, true);           // Mono
+  view.setUint32(24, sampleRate, true);  
+  view.setUint32(28, sampleRate * 2, true); 
+  view.setUint16(32, 2, true);           
+  view.setUint16(34, 16, true);          
+  
+  view.setUint32(36, 0x64617461, false); // "data"
+  view.setUint32(40, len, true);         
+  
+  for (let i = 0; i < len; i++) {
+    view.setUint8(44 + i, binary.charCodeAt(i));
+  }
+  
+  const blob = new Blob([buffer], { type: 'audio/wav' });
+  return URL.createObjectURL(blob);
+}
+
+async function speakText(text) {
+  const cleanText = text.replace(/🔊/g, '').trim();
+  if (!cleanText) return;
+
+  try {
+    const payload = {
+      contents: [{
+        parts: [{ text: `Say clearly in standard Mandarin: ${cleanText}` }]
+      }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: {
+              voiceName: "Leda"
+            }
+          }
+        }
+      }
+    };
+
+    const data = await callGeminiAPI(payload, "tts");
+    const base64Audio = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+    if (base64Audio) {
+      const audioUrl = pcmToWav(base64Audio, 24000);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    }
+  } catch (error) {
+    console.error("TTS generation error:", error);
+  }
+}
+
+// ── ACCORDION INTERACTIVITY ──────────────────────────────────────────────────
+
+function toggleAIAssistant() {
+  const body = document.getElementById("ai-assistant-body");
+  const icon = document.getElementById("ai-toggle-icon");
+  if (body.style.display === "none") {
+    body.style.display = "flex";
+    icon.textContent = "▲";
+  } else {
+    body.style.display = "none";
+    icon.textContent = "▼";
+  }
+}
+
+async function askQuickQuestion(questionText) {
+  document.getElementById("ai-custom-question").value = questionText;
+  await askCustomQuestion();
+}
+
+async function askCustomQuestion() {
+  const textarea = document.getElementById("ai-custom-question");
+  const question = textarea.value.trim();
+  const responseBox = document.getElementById("ai-assistant-response");
+  const btn = document.getElementById("ai-ask-btn");
+
+  if (!question) { textarea.focus(); return; }
+
+  btn.textContent = "⌛ Думает...";
+  btn.disabled = true;
+  responseBox.style.display = "block";
+  responseBox.innerHTML = `<em>Репетитор размышляет над вашим вопросом...</em>`;
+
+  const systemPrompt = `Ты дружелюбный ИИ-репетитор по китайскому языку. Студент изучает сравнения (比, 更, 没有, 最) и разницу между 很 и 是.
+  Ответь на вопрос кратко, понятно и мотивирующе на русском языке. Все китайские примеры обязательно снабжай пиньинем и русским переводом.
+  Сделай ответ структурированным и приятным для чтения.`;
+
+  const payload = {
+    contents: [{ parts: [{ text: question }] }],
+    systemInstruction: { parts: [{ text: systemPrompt }] }
+  };
+
+  try {
+    const result = await callGeminiAPI(payload);
+    const reply = result.candidates?.[0]?.content?.parts?.[0]?.text || "Извините, я отвлекся. Повторите вопрос!";
+    
+    responseBox.innerHTML = `<strong>Ответ репетитора:</strong><br>${reply.replace(/\n/g, '<br>')}`;
+  } catch (e) {
+    responseBox.innerHTML = `<span style="color:var(--red);">Не удалось связаться с ИИ-репетитором. Попробуйте еще раз!</span>`;
+  } finally {
+    btn.innerHTML = "✨ Спросить ИИ";
+    btn.disabled = false;
+  }
+}
+
+// ── RENDER TASKS ─────────────────────────────────────────────────────────────
+
+function renderCompTasks() {
+  const container = document.getElementById('comp-tasks');
+  container.innerHTML = "";
+  compTasks.forEach((task, ti) => {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+
+    const head = document.createElement('div');
+    head.className = 'task-head';
+    head.innerHTML = `<span class="task-num">${ti + 1}.</span>` +
+      task.words.map(w => `<span class="chip">${w}</span>`).join('') +
+      `<span class="chip cn">${task.wordsCN}</span>`;
+    card.appendChild(head);
+
+    const inputs = document.createElement('div');
+    inputs.className = 'task-inputs';
+
+    task.rows.forEach((row, ri) => {
+      const id = `c-${ti}-${ri}`;
+
+      const inputRow = document.createElement('div');
+      inputRow.className = 'input-row';
+      inputRow.innerHTML = `
+        <span class="input-badge" style="background:${row.color}">${row.badge}</span>
+        <input class="task-input" id="${id}" type="text" placeholder="${row.label}…" autocomplete="off" spellcheck="false">
+        <button class="check-btn" onclick="checkCompWithAI('${id}', ${ti}, '${row.badge}', '${row.hint}', '${row.label}')" title="Проверить с ИИ">
+          <span>✨</span>
+        </button>
+      `;
+      inputs.appendChild(inputRow);
+
+      const fb = document.createElement('div');
+      fb.className = 'feedback';
+      fb.id = `fb-${id}`;
+      inputs.appendChild(fb);
+    });
+
+    card.appendChild(inputs);
+    container.appendChild(card);
+  });
+}
+
+function renderTransformTasks() {
+  const container = document.getElementById('transform-tasks');
+  container.innerHTML = "";
+  transformTasks.forEach((task, ti) => {
+    const block = document.createElement('div');
+    block.className = 'transform-block';
+
+    block.innerHTML = `
+      <div class="transform-head">
+        <span class="t-num">${ti + 1}.</span>
+        <span class="t-ru">Тема: ${task.title}</span>
+      </div>
+      <div class="transform-rows">
+        <div class="t-row">
+          <div class="t-type hen">很</div>
+          <div class="t-content">
+            <span class="t-ru-prompt">«${task.hen.ru}» &nbsp;<span>(прилагательное-сказуемое)</span></span>
+            <div class="t-input-row">
+              <input class="task-input" id="t-${ti}-hen" type="text" placeholder="Переведи на китайский (с 很)…" autocomplete="off" spellcheck="false">
+              <button class="check-btn" onclick="checkTransformWithAI('t-${ti}-hen', ${ti}, 'hen', '${task.hen.ru}', '${task.hen.expected}')" title="Проверить с ИИ">
+                <span>✨</span>
+              </button>
+            </div>
+            <div class="feedback" id="fb-t-${ti}-hen"></div>
+          </div>
+        </div>
+        <div class="t-row">
+          <div class="t-type shi">是</div>
+          <div class="t-content">
+            <span class="t-ru-prompt">«${task.shi.ru}» &nbsp;<span>(определение перед существительным)</span></span>
+            <div class="t-input-row">
+              <input class="task-input" id="t-${ti}-shi" type="text" placeholder="Переведи на китайский (с 是...的)…" autocomplete="off" spellcheck="false">
+              <button class="check-btn" onclick="checkTransformWithAI('t-${ti}-shi', ${ti}, 'shi', '${task.shi.ru}', '${task.shi.expected}')" title="Проверить с ИИ">
+                <span>✨</span>
+              </button>
+            </div>
+            <div class="feedback" id="fb-t-${ti}-shi"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(block);
+  });
+}
+
+// ── DYNAMIC GENERATION VIA GEMINI ─────────────────────────────────────────────
+
+async function generateMoreCompTasks() {
+  const btn = document.getElementById("generate-comp-btn");
+  btn.classList.add("loading");
+  btn.disabled = true;
+  btn.innerHTML = "<span>⌛</span> ИИ генерирует задание...";
+
+  const prompt = `Сгенерируй новое упражнение на сравнения по китайскому языку уровня HSK1-HSK3.
+  Выбери 3 случайных связанных объекта.
+  Предоставь ответ СТРОГО в формате JSON без разметки markdown, соответствующем структуре:
+  {
+    "words": ["Слово1", "Слово2", "Свойство"],
+    "wordsCN": "Иероглиф1 / Иероглиф2 / ИероглифСвойства",
+    "rows": [
+      {"badge": "比", "color": "#1a4a7a", "label": "A свойство B", "hint": "Полное предложение на китайском"},
+      {"badge": "更", "color": "#2d6a4f", "label": "A еще более свойство", "hint": "Полное предложение на китайском"},
+      {"badge": "没有", "color": "#c0392b", "label": "A не такой свойство, как B", "hint": "Полное предложение на китайском"},
+      {"badge": "最", "color": "#b8860b", "label": "самый свойство", "hint": "Полное предложение на китайском"}
+    ]
+  }`;
+
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          words: { type: "ARRAY", items: { type: "STRING" } },
+          wordsCN: { type: "STRING" },
+          rows: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                badge: { type: "STRING" },
+                color: { type: "STRING" },
+                label: { type: "STRING" },
+                hint: { type: "STRING" }
+              },
+              required: ["badge", "color", "label", "hint"]
+            }
+          }
+        },
+        required: ["words", "wordsCN", "rows"]
+      }
+    }
+  };
+
+  try {
+    const rawResult = await callGeminiAPI(payload);
+    compTasks.push(rawResult);
+    renderCompTasks();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    btn.classList.remove("loading");
+    btn.disabled = false;
+    btn.innerHTML = "<span>✨</span> Сгенерировать новое задание от ИИ";
+  }
+}
+
+async function generateMoreTransformTasks() {
+  const btn = document.getElementById("generate-trans-btn");
+  btn.classList.add("loading");
+  btn.disabled = true;
+  btn.innerHTML = "<span>⌛</span> ИИ генерирует задание...";
+
+  const prompt = `Сгенерируй новое упражнение на разницу 很 и 是 по китайскому языку уровня HSK1-HSK3.
+  Предоставь ответ СТРОГО в формате JSON без разметки markdown, соответствующем структуре:
+  {
+    "title": "Тема (например, Погода и холод)",
+    "hen": {
+      "ru": "Предложение для перевода с 很",
+      "expected": "Пример верного ответа на китайском",
+      "pinyin": "пиньинь"
+    },
+    "shi": {
+      "ru": "Предложение для перевода с 是",
+      "expected": "Пример верного ответа на китайском с 是...的",
+      "pinyin": "пиньинь"
+    }
+  }`;
+
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          title: { type: "STRING" },
+          hen: {
+            type: "OBJECT",
+            properties: {
+              ru: { type: "STRING" },
+              expected: { type: "STRING" },
+              pinyin: { type: "STRING" }
+            },
+            required: ["ru", "expected", "pinyin"]
+          },
+          shi: {
+            type: "OBJECT",
+            properties: {
+              ru: { type: "STRING" },
+              expected: { type: "STRING" },
+              pinyin: { type: "STRING" }
+            },
+            required: ["ru", "expected", "pinyin"]
+          }
+        },
+        required: ["title", "hen", "shi"]
+      }
+    }
+  };
+
+  try {
+    const rawResult = await callGeminiAPI(payload);
+    transformTasks.push(rawResult);
+    renderTransformTasks();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    btn.classList.remove("loading");
+    btn.disabled = false;
+    btn.innerHTML = "<span>✨</span> Сгенерировать новое задание от ИИ";
+  }
+}
+
+// ── INTELLIGENT AI GRADING WITH GEMINI ────────────────────────────────────────
+
+async function checkCompWithAI(inputId, taskIndex, badge, correctHint, label) {
+  const input = document.getElementById(inputId);
+  const fb = document.getElementById(`fb-${inputId}`);
+  const btn = input.nextElementSibling;
+  const val = input.value.trim();
+  
+  if (!val) { input.focus(); return; }
+
+  btn.classList.add('spin');
+  btn.disabled = true;
+  input.classList.remove('correct', 'wrong');
+  input.classList.add('checking');
+  fb.className = 'feedback';
+
+  const systemPrompt = `Ты профессиональный учитель китайского языка. Проверь предложение ученика.
+  Оно должно использовать конструкцию "${badge}" в соответствии со смыслом "${label}".
+  Слова в задании: ${compTasks[taskIndex].wordsCN} (примерный ориентир: ${correctHint}).
+  
+  Критерии оценки:
+  - Правильность использования структуры ${badge}
+  - Соответствие китайских иероглифов нормам
+  - Допускай синонимы, если они логически подходят.
+  - Обязательно ответь строго в формате JSON:
+  {"ok": true/false, "comment": "Краткий дружелюбный отзыв на русском языке с указанием пиньиня. Хвали за успехи, мягко указывай на ошибки."}`;
+
+  const payload = {
+    contents: [{ parts: [{ text: `Предложение ученика на проверку: "${val}"` }] }],
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          ok: { type: "BOOLEAN" },
+          comment: { type: "STRING" }
+        },
+        required: ["ok", "comment"]
+      }
+    }
+  };
+
+  try {
+    const rawResult = await callGeminiAPI(payload);
+    
+    input.classList.remove('checking');
+    btn.classList.remove('spin');
+    btn.disabled = false;
+
+    if (rawResult.ok) {
+      input.classList.add('correct');
+      fb.className = 'feedback ok show';
+      fb.innerHTML = `✓ <strong>Верно!</strong> ${rawResult.comment} <button class="speak-inline-btn" onclick="speakText('${val.replace(/'/g, "\\'")}')" title="Прослушать">🔊</button>`;
+    } else {
+      input.classList.add('wrong');
+      fb.className = 'feedback bad show';
+      fb.innerHTML = `✗ <strong>Подсказка:</strong> ${rawResult.comment}`;
+    }
+  } catch (e) {
+    console.error(e);
+    input.classList.remove('checking');
+    btn.classList.remove('spin');
+    btn.disabled = false;
+    fb.className = 'feedback bad show';
+    fb.textContent = 'Ошибка проверки ИИ. Попробуй ещё раз!';
+  }
+}
+
+async function checkTransformWithAI(inputId, taskIndex, type, ruPhrase, expectedPhrase) {
+  const input = document.getElementById(inputId);
+  const fb = document.getElementById(`fb-${inputId}`);
+  const btn = input.nextElementSibling;
+  const val = input.value.trim();
+
+  if (!val) { input.focus(); return; }
+
+  btn.classList.add('spin');
+  btn.disabled = true;
+  input.classList.remove('correct', 'wrong');
+  input.classList.add('checking');
+  fb.className = 'feedback';
+
+  const systemPrompt = `Ты опытный учитель китайского языка. Проверь перевод ученика с русского на китайский.
+  Русское предложение: "${ruPhrase}".
+  Ожидаемый тип грамматики: ${type === 'hen' ? 'Предикативная связь через «很» (без 是)' : 'Определительная связь через «是...的»'}.
+  Примерный ориентир правильного перевода: ${expectedPhrase}.
+  
+  Критерии оценки:
+  - Если тип 'hen', в предложении НЕ должно быть глагола-связки "是". Обязательно использование наречия степени типа "很", "非常" перед качественным прилагательным.
+  - Если тип 'shi', в предложении ДОЛЖНА быть связка "是" и частица "的" для связи определения с существительным.
+  - Принимай разумные синонимы.
+  
+  Ответь строго в формате JSON:
+  {"ok": true/false, "comment": "Краткий разбор на русском языке с пиньинем. Мягко объясни грамматическую ошибку, если она есть."}`;
+
+  const payload = {
+    contents: [{ parts: [{ text: `Перевод ученика на китайский язык: "${val}"` }] }],
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          ok: { type: "BOOLEAN" },
+          comment: { type: "STRING" }
+        },
+        required: ["ok", "comment"]
+      }
+    }
+  };
+
+  try {
+    const rawResult = await callGeminiAPI(payload);
+    
+    input.classList.remove('checking');
+    btn.classList.remove('spin');
+    btn.disabled = false;
+
+    if (rawResult.ok) {
+      input.classList.add('correct');
+      fb.className = 'feedback ok show';
+      fb.innerHTML = `✓ <strong>Прекрасно!</strong> ${rawResult.comment} <button class="speak-inline-btn" onclick="speakText('${val.replace(/'/g, "\\'")}')" title="Прослушать">🔊</button>`;
+    } else {
+      input.classList.add('wrong');
+      fb.className = 'feedback bad show';
+      fb.innerHTML = `✗ <strong>Разбор:</strong> ${rawResult.comment}`;
+    }
+  } catch (e) {
+    console.error(e);
+    input.classList.remove('checking');
+    btn.classList.remove('spin');
+    btn.disabled = false;
+    fb.className = 'feedback bad show';
+    fb.textContent = 'Ошибка ИИ-проверки. Попробуй ещё раз!';
+  }
+}
+
+// ── GEMINI POWERED CHAT SIMULATOR (ROLEPLAY) ──────────────────────────────────
+
+const chatHistory = [
+  {
+    role: "user",
+    parts: [{ text: "Привет! Давай начнем ролевую игру. Ты - дружелюбный, но эмоциональный китайский торговец овощами на рынке (老板). Я - покупатель. Отвечай мне короткими, простыми фразами на китайском (соответствующими уровню HSK1-HSK3), добавляй пиньинь и перевод на русский язык в круглых скобках под китайским текстом. Торгуйся со мной, если я прошу скидку! Начнем." }]
+  }
+];
+
+async function sendMarketMessage() {
+  const inputEl = document.getElementById('market-chat-input');
+  const btnEl = document.getElementById('market-chat-send-btn');
+  const message = inputEl.value.trim();
+  if (!message) return;
+
+  appendChatMessage(message, "user");
+  inputEl.value = "";
+  
+  btnEl.textContent = "⌛ Думает...";
+  btnEl.disabled = true;
+
+  chatHistory.push({
+    role: "user",
+    parts: [{ text: message }]
+  });
+
+  const payload = {
+    contents: chatHistory,
+    systemInstruction: {
+      parts: [{ text: "Ты китайский торговец овощами на рынке. Твои реплики должны быть короткими, живыми, с пиньинем и переводом на русский. Предлагай фрукты, овощи, реагируй на слова '太贵ла' (слишком дорого) или '便宜一点' (подешевле)." }]
+    }
+  };
+
+  try {
+    const data = await callGeminiAPI(payload);
+    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "老板: 哎呀，听不懂你说什么！ (Aiyā, tīng bù dǒng nǐ shuō shénme! - Ой, не понимаю, что ты говоришь!)";
+    
+    chatHistory.push({
+      role: "model",
+      parts: [{ text: replyText }]
+    });
+
+    const chineseOnly = replyText.split(/[(\n]/)[0].replace(/老板:/, "").trim();
+    appendChatMessage(replyText, "vendor", chineseOnly);
+  } catch (e) {
+    appendChatMessage("老板: (Ошибка связи с ИИ. Продавец временно отошел...)", "vendor");
+  } finally {
+    btnEl.innerHTML = "✨ Отправить";
+    btnEl.disabled = false;
+  }
+}
+
+function appendChatMessage(text, sender, chineseTextForSpeak = "") {
+  const container = document.getElementById('market-chat-messages');
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble ${sender}`;
+  
+  let formattedText = text.replace(/\n/g, "<br>");
+  if (sender === "vendor") {
+    bubble.innerHTML = `<strong>老板:</strong> ${formattedText}`;
+    if (chineseTextForSpeak) {
+      const cleanSpeakText = chineseTextForSpeak.replace(/'/g, "\\'");
+      bubble.innerHTML += `<br><button class="speak-inline-btn" onclick="speakText('${cleanSpeakText}')" style="margin-top:6px;">🔊 Озвучить реплику</button>`;
+    }
+  } else {
+    bubble.innerHTML = `<strong>Вы:</strong> ${formattedText}`;
+  }
+  
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+}
+
+// ── GLOBAL LISTENERS ──────────────────────────────────────────────────────────
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    if (e.target.classList.contains('task-input')) {
+      const btn = e.target.nextElementSibling;
+      if (btn && btn.classList.contains('check-btn')) btn.click();
+    } else if (e.target.id === 'market-chat-input') {
+      sendMarketMessage();
+    }
+  }
+});
+
+window.onload = function() {
+  renderCompTasks();
+  renderTransformTasks();
+};
+</script>
+</body>
+</html>
